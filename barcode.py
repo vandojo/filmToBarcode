@@ -102,28 +102,7 @@ class Barcode:
 
         return
     
-    # this function is unfinished
-    def toStackedBars(self, bar_width: int, bar_height:int, columns: int, rows:int, pixel_vals=None)-> None:
-
-        pixels = []
-        if pixel_vals is None:
-
-            pixels = self.getAvgPixels()
-        else:
-            pixels = pixel_vals
-
-        barcode = np.zeros((bar_height, len(pixel_vals) * bar_width, 3), dtype="uint8")
-
-        for (i, avg) in enumerate(pixel_vals):
-
-            # OpenCV does not recognise numpy arrays
-            # need to convert each pixel value to an integer
-            b = int(avg[0])
-            g = int(avg[1])
-            r = int(avg[2])
-
-
-        return
+    
 
 
 
