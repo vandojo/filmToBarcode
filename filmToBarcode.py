@@ -12,14 +12,14 @@ parser = argparse.ArgumentParser(prog="filmToBarcode",
                                  )
 
 
-parser.add_argument("--version", action="version", version="%(prog) 0.1.0",
+parser.add_argument("-v","--version", action="version", version="filmToBarcode 0.1.0",
                     help="Display the version number of the program")
 
 
 # Required arguments: path to input file, temp file name, path to output file
 parser.add_argument("-i", "--input", required=True, help="Path to the video input file. This is a required argument.")
 parser.add_argument("-t", '--temp', help="Name of temporary JSON file in which film data is stored.", type=str)
-parser.add_argument("-o", "--output", help="Name of the output file.", type=str)
+parser.add_argument("-o", "--output", required=True, help="Name of the output file. If you do not include this file, remember to call the Barcode class appropriately.", type=str)
 
 
 # Optional arguments: 
@@ -44,9 +44,9 @@ parser.add_argument("--wrap", help="Normally one bar is created. Specify this ar
 
 def main(args):
 
-    bc = Barcode()
+    bc = Barcode(input_file=args['input'])
 
-    bc.avgPixelValues(file_name=args['input'], store_list=True)
+    bc.avgPixelValues(store_list=True)
     bc.toBarcode(bar_width=1, bar_height=250, file_name=args['output'])
     
 
@@ -60,8 +60,8 @@ if __name__ == "__main__":
     if not Path(args['input']).exists():
         parser.exit(1, message="The target input file doesn't exist. Please check your input variables.")
     else:       
-
-        main(args)
+        print(args)
+        #main(args)
 
         
     

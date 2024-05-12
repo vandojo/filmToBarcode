@@ -4,16 +4,25 @@ import json
 
 
 class Barcode:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, input_file:str) -> None:
+        self.input_file = input_file
+        
+        
 
-    def avgPixelValues(self, file_name: str, skip_frames=1, store_list=False) -> list:
+    def getInputFile(self):
+        return self.input_file
+    
+    
+
+    def avgPixelValues(self, skip_frames=1, store_list=False) -> list:
         
         avg_pixels = []
         total_frames = 0
 
+        input_file = self.getInputFile()
+
         # create video capture object
-        cap = cv.VideoCapture(file_name)
+        cap = cv.VideoCapture(input_file)
 
         if cap is None:
             print('Error loading the video')
@@ -58,8 +67,9 @@ class Barcode:
             return
     
     @staticmethod
-    def toJson(file_name:str, avg_pixels: list) -> None:
+    def toJson(avg_pixels: list, file_name:str) -> None:
 
+       
         with open(file_name, 'w') as f:
             f.write(json.dumps(avg_pixels))
 
