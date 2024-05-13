@@ -53,10 +53,15 @@ class Barcode:
         # release capture object
         cap.release()
 
-        if store_list:
-            self.avgPixels = avg_pixels
+       
+        self.avgPixels = avg_pixels
 
-        return avg_pixels
+        if store_list:
+            return True
+        else:
+            return False
+
+        
     
     def getAvgPixels(self)-> list:
         try:

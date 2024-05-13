@@ -8,7 +8,7 @@ from barcode import Barcode
 
 parser = argparse.ArgumentParser(prog="filmToBarcode", 
                                  description="CLI that creates a vector image from a film file",
-                                 epilog="Thank you for using filmToBarcode! <3",
+                                 epilog="Thank you for using %(prog)s <3",
                                  )
 
 
@@ -29,11 +29,12 @@ parser.add_argument("-H", "--height", help="Integer value, that determines the h
 # width of the output image
 parser.add_argument("-W", "--width", help="Integer value, that determines the width of the bars in the output image.", type=int, default=1)
 
-# number of frames to skip, this can be used to reduce image widt/reduce no of pixels
-parser.add_argument("-S", "--skip", help="This specifies the number of frames to skip. This can also reduce the width of the image file.", type=int, default=0)
+# line thickness of the rectangles
+parser.add_argument("-lt", "--line_thickness", help="Integer value, that determines the thickness of the bars in the output image.", type=int, default=-1)
 
-# Represents whether to wrap the rectangles around or not
-parser.add_argument("--wrap", help="Normally one bar is created. Specify this argument to wrap the rectangles around and create one bar comprised of multiple smaller ones.", action="store_true")
+# number of frames to skip, this can be used to reduce image widt/reduce no of pixels
+parser.add_argument("-S", "--skip", help="This specifies the number of frames to skip. This can also reduce the width of the image file.", type=int, default=1)
+
 
 
 
@@ -46,10 +47,22 @@ def main(args):
 
     bc = Barcode(input_file=args['input'])
 
-    bc.avgPixelValues(store_list=True)
-    bc.toBarcode(bar_width=1, bar_height=250, file_name=args['output'])
-    
+    if 'temp' in args:
+        args['store_list'] = False
+    else:
+        args['store_list'] = True
 
+    # holds True if the pixel values need to be stored in a json file
+    pixels = bc.avgPixelValues(skip_frames=args['skip'], store_list=args['store_list'])
+
+    if pixels:
+        bc.toJson(file_name=args['temp'])
+
+        bc.toBarcode(bar_width=args['width'], bar_height=args['height'], file_name=args['output'], line_thickness=args['line_thickness'])
+    else:
+        bc.toBarcode(bar_width=args['width'], bar_height=args['height'], file_name=args['output'], line_thickness=args['line_thickness'])
+
+    
     return
 
 
@@ -60,8 +73,7 @@ if __name__ == "__main__":
     if not Path(args['input']).exists():
         parser.exit(1, message="The target input file doesn't exist. Please check your input variables.")
     else:       
-        print(args)
-        #main(args)
+        main(args)
 
         
     
