@@ -71,8 +71,10 @@ class Barcode:
                   Call method avgPixelValues first with store_list=True''')
             return
     
-    @staticmethod
-    def toJson(avg_pixels: list, file_name:str) -> None:
+    
+    def toJson(self, file_name:str) -> None:
+
+        avg_pixels = self.getAvgPixels()
 
        
         with open(file_name, 'w') as f:
@@ -80,8 +82,8 @@ class Barcode:
 
         return
     
-    @staticmethod
-    def fromJson(file_name:str) -> np.array:
+    
+    def fromJson(self, file_name:str) -> np.array:
 
         pixel_avgs = json.loads(open(file_name).read())
 
