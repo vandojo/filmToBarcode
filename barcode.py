@@ -1,6 +1,6 @@
 # vandojo 2024
 
-
+import sys
 import cv2 as cv
 import numpy as np
 import json
@@ -31,10 +31,17 @@ class Barcode:
             print('Error loading the video')
             return
         
+        cap_length = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+        
+        print("This might take a while...")
+        
         while True:
 
             # Read video file frame by frame
             ret, frame = cap.read()
+
+            # print progress
+            self.progress(count=total_frames, total=cap_length)
 
             # ret is True if a frame is read
             if not ret:
@@ -51,6 +58,9 @@ class Barcode:
             if total_frames % skip_frames ==0:
                 avg_pixel = cv.mean(frame)[:3]
                 avg_pixels.append(avg_pixel)
+
+            
+            
         
         # done with video loop
         # release capture object
@@ -93,6 +103,23 @@ class Barcode:
         pixel_avgs = np.array(pixel_avgs, dtype="uint8")
 
         return pixel_avgs
+    
+
+    @staticmethod
+    def progress(count:int, total:int, suffix='') -> None:
+
+        progress_bar_length = 100
+
+        current_length = int(round(progress_bar_length * count / float(total)))
+
+        pct = round(100 * count / float(total), 1)
+        
+        bar = '=' * current_length + '-' * (progress_bar_length - current_length)
+        
+        sys.stdout.write('[%s] %s%s ...%s\r' %(bar, pct, '%', suffix))
+
+        sys.stdout.flush()
+        return
     
     def toBarcode(self, bar_width: int, bar_height:int, file_name:str, line_thickness=-1, pixel_vals=None) -> None:
         pixels = []
